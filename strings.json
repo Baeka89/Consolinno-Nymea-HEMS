@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Consolinno Nymea HEMS",
+        "data": {
+          "host": "IP-Adresse",
+          "port": "Port",
+          "username": "Benutzername",
+          "password": "Passwort",
+          "ssl": "SSL verwenden",
+          "poll_interval": "Intervall (Sekunden)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Nymea HEMS fehlgeschlagen. Bitte IP prüfen."
+    },
+    "abort": {
+      "already_configured": "Dieses Gerät ist bereits konfiguriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Einstellungen anpassen",
+        "data": {
+          "host": "IP-Adresse",
+          "poll_interval": "Intervall (Sekunden)"
+        }
+      }
+    }
+  }
+}

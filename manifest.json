@@ -1,0 +1,7 @@
+{
+    "domain": "nymea_hem",
+    "name": "Consolinno Nymea HEMS",
+    "codeowners": ["@Baeka89"],
+    "config_flow": true,
+    "version": "1.1.0"
+}
