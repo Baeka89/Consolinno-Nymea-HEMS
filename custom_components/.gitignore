@@ -1,0 +1,13 @@
+# Python-Zwischenspeicher (Cache) - das verhindert die Fehler von vorhin
+**/__pycache__/
+*.py[cod]
+
+# Home Assistant Logdateien (damit wir deine Logs nicht hochladen)
+*.log
+
+# System-Dateien
+.DS_Store
+Thumbs.db
+
+# VS Code Einstellungen
+.vscode/

@@ -1,0 +1,14 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "host": "IP-Adresse",
+          "port": "Port",
+          "username": "Benutzername",
+          "password": "Passwort"
+        }
+      }
+    }
+  }
+}
