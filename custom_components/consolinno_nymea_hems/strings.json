@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Consolinno Nymea HEMS",
+        "description": "Bitte gib die Verbindungsdaten für dein Nymea HEMS an.",
+        "data": {
+          "host": "IP-Adresse oder Hostname",
+          "port": "Port (Standard: 2222)",
+          "username": "Benutzername",
+          "password": "Passwort",
+          "ssl": "SSL-Verschlüsselung verwenden",
+          "poll_interval": "Abfrage-Intervall (Sekunden)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Nymea HEMS fehlgeschlagen. Bitte prüfe IP und Port.",
+      "invalid_auth": "Ungültiger Benutzername oder Passwort.",
+      "unknown": "Unerwarteter Fehler aufgetreten."
+    },
+    "abort": {
+      "already_configured": "Dieses Nymea HEMS Gerät ist bereits in Home Assistant integriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Nymea HEMS Einstellungen",
+        "data": {
+          "host": "IP-Adresse / Hostname",
+          "poll_interval": "Abfrage-Intervall (Sekunden)"
+        }
+      }
+    }
+  }
+}
