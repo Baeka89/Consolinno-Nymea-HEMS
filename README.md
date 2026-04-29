@@ -1,66 +1,78 @@
-# Nymea HEMS Integration for Home Assistant
+# Consolinno Nymea HEMS Integration for Home Assistant
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.me/misomazo)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![Maintainer](https://img.shields.io/badge/Maintainer-Baeka89-blue.svg)](https://github.com/Baeka89)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/misomazo)
 
-*German version below / Deutsche Version unten*
-
-This integration connects your Consolinno Nymea HEMS device to Home Assistant, allowing you to monitor and manage your energy flows.
-
-## Features
-* 📊 **Real-time monitoring** of PV, Battery, and Grid power.
-* 🚗 **EV Charger control** and status updates.
-* ⚡ **Optimized energy management** data at your fingertips.
-
-## Installation
-
-### Via HACS (Recommended)
-1. Open **HACS** in your Home Assistant instance.
-2. Click on the three dots in the top right corner and select **"Custom repositories"**.
-3. Paste the URL of this repository and select **"Integration"** as the category.
-4. Click **"Add"** and then **"Install"**.
-5. Restart Home Assistant.
-
-### Manual Installation
-1. Download the repository.
-2. Copy the `nymea_hem` folder from `custom_components` to your `config/custom_components/` directory.
-3. Restart Home Assistant.
-
-## Configuration
-1. Go to **Settings** -> **Devices & Services**.
-2. Click **Add Integration** and search for **"Nymea HEMS"**.
-3. Enter your device's IP address, port, and credentials.
+[Deutsch](#deutsch) | [English](#english)
 
 ---
 
-# Nymea HEMS Integration für Home Assistant (Deutsch)
+<a name="deutsch"></a>
+## Deutsch 🇩🇪
 
-[![Spenden](https://img.shields.io/badge/Spenden-PayPal-blue.svg)](https://www.paypal.me/misomazo)
+### Über dieses Projekt
+Diese Custom Integration ermöglicht die nahtlose Einbindung des **Consolinno Leaflet HEMS** (basierend auf nymea) in Home Assistant. Die Integration kommuniziert direkt mit der lokalen API deines HEMS, um alle konfigurierten Geräte ("Things") und deren Statuswerte automatisch als Sensoren bereitzustellen.
 
-Diese Integration verbindet dein Consolinno Nymea HEMS Gerät mit Home Assistant, um Energieflüsse zu überwachen und zu steuern.
+### Features
+* **Automatische Erkennung:** Erfasst alle im HEMS vorhandenen Geräte und Zustände automatisch via `Integrations.GetThings`.
+* **Dynamische Sensoren:** Erstellt Entitäten basierend auf den verfügbaren Nymea-Datenpunkten direkt aus der `sensor.py`.
+* **Intelligentes Mapping:** Automatische Zuordnung von Einheiten (Watt, kWh, Celsius etc.) zu den entsprechenden Home Assistant Device Classes.
+* **Effizientes Polling:** Optimierte Datenabfrage, um die API-Last des HEMS gering zu halten.
+* **Optimiertes Datenhandling:** Komplexe Payloads werden sicher in Attributen gespeichert, um die 255-Zeichen-Beschränkung von Statuswerten zu umgehen.
 
-## Funktionen
-* 📊 **Echtzeit-Überwachung** von PV-, Batterie- und Netzleistung.
-* 🚗 **Wallbox-Steuerung** (EV Charger) und Statusanzeigen.
-* ⚡ **Optimiertes Energiemanagement** direkt in Home Assistant.
+### Installation
+1. Kopiere den Ordner `consolinno_nymea` in das Verzeichnis `custom_components` deiner Home Assistant Instanz.
+2. Starte Home Assistant neu.
+3. Gehe zu **Einstellungen > Geräte & Dienste > Integration hinzufügen**.
+4. Suche nach **Consolinno Nymea HEMS**.
 
-## Installation
+### Konfiguration
+Bei der Einrichtung werden folgende Informationen benötigt:
+* **Host:** Die IP-Adresse deines HEMS-Moduls.
+* **Port:** Standardmäßig `2222`.
+* **Benutzername & Passwort:** Deine Nymea-Zugangsdaten.
 
-### Über HACS (Empfohlen)
-1. Öffne **HACS** in Home Assistant.
-2. Klicke oben rechts auf die drei Punkte und wähle **"Benutzerdefinierte Repositories"**.
-3. Füge die URL dieses Repositories ein und wähle **"Integration"** als Kategorie.
-4. Klicke auf **"Hinzufügen"** und anschließend auf **"Installieren"**.
-5. Starte Home Assistant neu.
+### Unterstützung
+Wenn dir diese Integration hilft, freue ich mich über eine kleine Unterstützung für die Weiterentwicklung:
+👉 **[Spende via PayPal](https://paypal.me/misomazo)**
 
-### Manuelle Installation
-1. Lade das Repository herunter.
-2. Kopiere den Ordner `nymea_hem` aus `custom_components` in dein Verzeichnis `config/custom_components/`.
-3. Starte Home Assistant neu.
+---
 
-## Konfiguration
-1. Gehe zu **Einstellungen** -> **Geräte & Dienste**.
-2. Klicke auf **"Integration hinzufügen"** und suche nach **"Nymea HEMS"**.
-3. Gib die IP-Adresse, den Port und deine Zugangsdaten ein.
+<a name="english"></a>
+## English 🇺🇸
 
-## License / Lizenz
-This project is licensed under the MIT License. / Dieses Projekt ist unter der MIT-Lizenz lizenziert.
+### About this Project
+This custom integration allows Home Assistant to interface with the **Consolinno Leaflet HEMS** (powered by nymea). It automatically discovers all connected "Things" and their states, exposing them as native Home Assistant sensors.
+
+### Features
+* **Automatic Discovery:** Automatically fetches all devices and states via `Integrations.GetThings`.
+* **Dynamic Sensor Creation:** Entities are created on-the-fly based on available Nymea data points.
+* **Smart Unit Mapping:** Maps Nymea units (e.g., UnitWatt) to Home Assistant's standard device classes.
+* **Efficient Updates:** Optimized polling logic to reduce API overhead on your HEMS.
+* **Payload Management:** Large or complex data values are stored in sensor attributes to stay within state character limits.
+
+### Installation
+1. Copy the `consolinno_nymea` folder into your Home Assistant `custom_components` directory.
+2. Restart Home Assistant.
+3. Navigate to **Settings > Devices & Services > Add Integration**.
+4. Search for **Consolinno Nymea HEMS**.
+
+### Configuration
+You will need the following details during setup:
+* **Host:** The IP address of your HEMS module.
+* **Port:** Default is `2222`.
+* **Username & Password:** Your Nymea credentials.
+
+### Support
+If you find this integration useful, please consider supporting its development:
+👉 **[Donate via PayPal](https://paypal.me/misomazo)**
+
+---
+
+### Technische Komponenten / Technical Components
+* `manifest.json`: Metadaten, Versionierung und Abhängigkeiten / Integration metadata and requirements.
+* `sensor.py`: Logik für die Sensorgenerierung und Statusverarbeitung / Core logic for sensor generation.
+* `const.py`: Zentrale Definitionen und Konstanten / Global constants and domain definitions.
+* `__init__.py`: Handhabt den Verbindungsaufbau und das Setup / Handles connection and integration setup.
+* `config_flow.py`: Benutzerführung für die Einrichtung in der UI / User interface for the integration setup.
