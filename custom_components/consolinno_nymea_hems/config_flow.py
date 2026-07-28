@@ -21,7 +21,7 @@ from .const import (
     DEFAULT_SSL,
     DEFAULT_POLL_INTERVAL,
 )
-from .nymea_client import NymeaClient
+from .nymea_client import NymeaClient, ha_language_to_nymea_locale
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -38,23 +38,33 @@ class NymeaHEMConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(user_input[CONF_HOST])
             self._abort_if_unique_id_configured()
 
+            client = NymeaClient(
+                host=user_input[CONF_HOST],
+                port=user_input.get(CONF_PORT, DEFAULT_PORT),
+                username=user_input[CONF_USERNAME],
+                password=user_input[CONF_PASSWORD],
+                ssl_enabled=user_input.get(CONF_SSL, DEFAULT_SSL),
+                locale=ha_language_to_nymea_locale(self.hass.config.language),
+            )
             try:
-                client = NymeaClient(
-                    host=user_input[CONF_HOST],
-                    port=user_input.get(CONF_PORT, DEFAULT_PORT),
-                    username=user_input[CONF_USERNAME],
-                    password=user_input[CONF_PASSWORD],
-                    ssl_enabled=user_input.get(CONF_SSL, DEFAULT_SSL)
-                )
                 await client.authenticate()
-                
+
                 return self.async_create_entry(
                     title=f"Consolinno Nymea HEMS ({user_input[CONF_HOST]})",
                     data=user_input
                 )
+            except ValueError:
+                # NymeaClient.authenticate() wirft ValueError gezielt bei
+                # falschen Zugangsdaten (Gateway war erreichbar, Login aber nicht ok).
+                _LOGGER.error("Ungültige Zugangsdaten für Nymea HEMS (%s)", user_input[CONF_HOST])
+                errors["base"] = "invalid_auth"
             except Exception as err:
                 _LOGGER.error("Connection error to Nymea HEMS: %s", err)
                 errors["base"] = "cannot_connect"
+            finally:
+                # Verbindung des Test-Clients in jedem Fall schließen, sonst bleiben
+                # Socket + Listener-/Keepalive-Tasks bei jedem Einrichtungsversuch offen.
+                await client.close_connection()
 
         return self.async_show_form(
             step_id="user",

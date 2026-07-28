@@ -13,6 +13,7 @@ from homeassistant.const import (
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 from .const import DOMAIN
+from .nymea_action_helpers import t, thing_name
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,9 +37,10 @@ UNIT_MAP = {
 async def async_setup_entry(hass, config_entry, async_add_entities):
     data = hass.data[DOMAIN][config_entry.entry_id]
     coordinator = data["coordinator"]
-    client = data["client"]
     server_info = data.get("server_info", {})
-    
+    # In __init__.py einmalig zentral abgerufen (statt hier erneut vom Gateway zu holen)
+    thing_class_cache = data.get("thing_class_cache", {})
+
     sensors = []
     
     # 1. Server-Info Sensor (Landet in der "Nymea Übersicht")
@@ -48,26 +50,33 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     if coordinator.data:
         for thing in coordinator.data:
             try:
-                cls_data = await client.get_thing_class_details(thing.get("thingClassId"))
-                st_types = cls_data[0].get("stateTypes", []) if cls_data else []
-                
+                st_types = thing_class_cache.get(thing.get("thingClassId"), [])
+
                 for state in thing.get("states", []):
-                    # Nur nicht-Booleans verarbeiten
+                    # Nur nicht-Booleans verarbeiten (Booleans -> switch.py / binary_sensor.py)
                     if isinstance(state.get("value"), bool):
                         continue
-                        
+
                     st_def = next((t for t in st_types if t["id"] == state["stateTypeId"]), None)
+
+                    # Schreibbare numerische States werden von number.py als number-Entity
+                    # angelegt (dort steuerbar) - hier NICHT zusätzlich als Sensor, sonst
+                    # gäbe es zwei Entities für denselben Wert.
+                    if st_def and st_def.get("writable") and isinstance(state.get("value"), (int, float)):
+                        continue
+
                     sensors.append(NymeaHEMStatSensor(coordinator, thing, state, st_def, server_info))
             except Exception as e:
                 _LOGGER.error(f"Fehler bei {thing.get('name')}: {e}")
 
+    _LOGGER.debug("consolinno_nymea_hems.sensor: %d Sensoren werden hinzugefügt", len(sensors))
     async_add_entities(sensors)
 
 class NymeaHEMStatSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, thing, state, st_def, server_info):
         super().__init__(coordinator)
         self._thing_id = thing.get("id")
-        self._thing_name = thing.get("name", "Unbekannt")
+        self._thing_name = thing.get("name", t("unknown_thing"))
         self._state_type_id = state.get("stateTypeId")
         self._st_def = st_def
         
@@ -86,7 +95,7 @@ class NymeaHEMStatSensor(CoordinatorEntity, SensorEntity):
             "identifiers": {(DOMAIN, self._thing_id)},
             "name": self._thing_name,
             "manufacturer": "Consolinno",
-            "model": "HEMS Device",
+            "model": t("hems_device_model"),
         }
         
         # Optionale Verknüpfung zur Übersicht (via_device)
@@ -157,15 +166,15 @@ class NymeaServerInfoSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._info = info
         server_uuid = info.get("uuid", "").replace("{", "").replace("}", "")
-        self._attr_name = "Nymea System Version"
+        self._attr_name = t("system_version_name")
         self._attr_unique_id = f"nymea_info_{server_uuid or entry_id}"
         
         # Dieses Gerät bündelt alles, was sonst "in der Luft hängen" würde
         self._attr_device_info = {
             "identifiers": {(DOMAIN, f"nymea_overview_{server_uuid}")},
-            "name": "Nymea Übersicht",
+            "name": t("nymea_overview_device"),
             "manufacturer": "Consolinno",
-            "model": "System Overview",
+            "model": t("system_overview_model"),
         }
 
     @property
